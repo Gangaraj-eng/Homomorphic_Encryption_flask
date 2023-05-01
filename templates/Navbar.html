@@ -1,0 +1,109 @@
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+      <a class="navbar-brand" href="/">
+          <span>
+            <img src="/static/website_icon.svg" style="width:30px;height:30px;" >
+        </span>HECalculator</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse " id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+              <li class="nav-item"
+                  onMouseOut="this.style.backgroundcolor='#00F'">
+                  <a class="nav-link 
+                      active
+                    
+                          aria-current=" page" href="/">
+                      Home
+                  </a>
+              </li>
+              <li class="nav-item ">
+                  <a class="nav-link 
+                  
+                  " href="/about">About</a>
+              </li>
+      
+          </ul>
+      </div>
+      <!-- Login and logout buttons -->
+      <button class="btn btn-dark" onclick="flipicon()" style="transform:scaleX(-1)">
+          <i class="fas fa-adjust" id="night"></i>
+      </button>
+      <div id="inbtns">
+          <a href="/signup">
+              <button class=" mx-1 btn btn-sm signbutton">
+                  sign up
+              </button>
+          </a>
+          <a href="/login">
+              <button class="mx-1 btn btn-sm signbutton">
+                  Log in
+              </button>
+          </a>
+      </div>
+      <div id="outbtns" style="display: none;">
+
+          <button class=" mx-1 btn btn-sm signbutton" onclick="logout()">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
+              logout
+          </button>
+
+      </div>
+  </div>
+</nav>
+<script>
+  let mode = 'light';
+  if (localStorage.getItem('token')) {
+      document.getElementById('outbtns').style.display = "block";
+      document.getElementById('inbtns').style.display = "none";
+
+    }
+  else {
+    const host=window.location.protocol+'//'+window.location.host;
+    document.getElementById('outbtns').style.display = "none";
+    document.getElementById('inbtns').style.display = "block";
+    
+  }
+  function logout() {
+      localStorage.clear();
+      window.location.replace(`${window.location.protocol+"//"+window.location.host}/login`);
+  }
+  function flipicon() {
+      const elements=document.getElementsByClassName('modechange');
+      if (mode === "night") {
+          mode = 'light'
+          document.body.style.backgroundColor = "rgb(241 241 241)";
+          document.getElementById('night').style.transform = 'scaleX(1)';
+          for(let i=0;i<elements.length;i++)
+          elements[i].style.color="black";
+          
+          
+      }
+      else {
+          mode = 'night';
+          document.body.style.backgroundColor = "black";
+          document.getElementById('night').style.transform = 'scaleX(-1)';
+          for(let i=0;i<elements.length;i++)
+          elements[i].style.color="white";
+      }
+      console.log("clicked")
+  }
+  async function check() {
+      const authtoken = localStorage.getItem('token');
+      let response = await fetch(`${window.location.protocol+"//"+window.location.host}/auth/getuserid`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'authtoken': authtoken
+          }
+      });
+      let json = await response.json();
+      window.location.replace(`${window.location.protocol+"//"+window.location.host}/blog/yourblogs/${json.id}`);
+  }
+  
+</script>
